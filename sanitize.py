@@ -21,15 +21,15 @@ def get_file():
 # more tersely and effieciently like:
 #
 # def sanitize_data(data)
-#     return map(lambda s: s.replace("’", "'").lstrip(digits).rstrip(), data)
+#     return [lambda s: s.replace("’", "'").lstrip(digits).rstrip() for x in data]
 #
 # This has the advantage of only iterating over the array
 # a single time and chains the function calls together
 # so we don't need to assign temporary variables
 def sanitize_data(data):
-    step1 = map(trim_digits, data)
-    step2 = map(trim_newlines, step1)
-    return map(replace_apostrophes, step2)
+    step1 = [trim_digits(x) for x in data]
+    step2 = [trim_newlines(x) for x in step1]
+    return [replace_apostrophes(x) for x in step2]
 
 # trip newlines from the string
 # rstrip by default will strip all
@@ -41,20 +41,9 @@ def trim_newlines(str):
 # trim leading digits from the
 # string if they exist
 def trim_digits(str):
-    return str.lstrip(digits)
+    return str.lstrip(digits).lstrip()
 
 # Replace the apostrophes in the string
 # where they exist
 def replace_apostrophes(str):
     return str.replace("’", "'")
-
-# We call the functions above here
-
-# Get the file we want to read
-file = get_file()
-
-# Sanitize the data in the file
-data = sanitize_data(load_data(file))
-
-# Print the data to the console
-list(map(print,data))
